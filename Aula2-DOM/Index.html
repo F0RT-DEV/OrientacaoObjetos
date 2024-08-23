@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arvore DOM</title>
+    <script>
+        function LerArquivoCSV(arquivo, callback){
+            // manipular o arquivo
+            const leitor = new FileReader();
+            //onlod fará o carregamento do arquivo
+            leitor.onload = function(evento){
+                const conteudo = evento.target.result;
+                callback(conteudo);
+            }
+            leitor.readAsText(arquivo)
+        }
+
+        //definindo o nome do arquivo.csv que faremos a leitura
+        const inputArquivo = document.getElementById('arquivoCSV')
+        inputArquivo.addEventListener('change', function(evento){
+            const arquivo = evento.target.files[0];
+            LerArquivoCSV(arquivo, function(conteudo){
+                function converterCSVparaArray(conteudoCSV){
+                    //Definindo as linhas
+                    // a função split quebra em vetores o conteudo de acordo com o separador(\n)
+                    const linhas = conteudoCSV.split('\n');
+                    const arrayCSV = [];
+
+                    linhas.forEach(function(linha){
+                        // a função split quebra em vetores o conteudo de acordo com o separador(,)
+                        const valores = linha.split(',');
+                        arrayCSV.push(valores)
+                    });
+                    return arrayCSV;
+                }
+            });
+        });
+        arrayCSV.forEach(function(linha){
+            console.log(linha);
+        });
+
+        /*
+        jeito certo
+
+        Vamos analisar o código linha a linha para encontrar os erros:
+
+Erro 1: FilerReader deveria serFileReader
+
+Na linha 9, você escreveu const leitor = new FilerReader();, mas o nome correto da classe é FileReader. Correção:const leitor = new FileReader();
+
+Erro 2: LerArquivoCSV não está sendo chamado corretamente
+
+Na linha 24, você adicionou um evento onclickao botão de submit, mas a função LerArquivoCSVespera dois argumentos: arquivoe callback. No entanto, você não está passando nenhum argumento quando chama a função. Além disso, a função LerArquivoCSVnão é uma função que pode ser chamada como um evento de clique. Correção: remova o evento onclicke chame a função LerArquivoCSVquando o arquivo for selecionado (veja abaixo).
+
+Erro 3: arrayCSV não está definido
+
+Na linha 31, você está tentando iterar sobre arrayCSVcom forEach, mas arrayCSVnão está definido nesse escopo. Correção: defina arrayCSVdentro da função LerArquivoCSVe itere sobre ele lá.
+
+Erro 4: converterCSVparaArray não está definido
+
+Na linha 28, você está chamando a função converterCSVparaArray, mas ela não está definida nesse escopo. Correção: defina a função converterCSVparaArrayantes de chamá-la.
+
+Erro 5: inputArquivo.addEventListener não está sendo chamado corretamente
+
+Na linha 22, você está adicionando um evento changeao input do arquivo, mas não está chamando a função LerArquivoCSVcorretamente. Correção: chamar a função LerArquivoCSVcom os argumentos corretos dentro do evento change.
+
+Aqui está o código corrigido:
+
+
+
+        const inputArquivo = document.getElementById('arquivoCSV')
+inputArquivo.addEventListener('change', function(evento){
+    const arquivo = evento.target.files[0];
+    LerArquivoCSV(arquivo, function(conteudo){
+        const arrayCSV = converterCSVparaArray(conteudo);
+        arrayCSV.forEach(function(linha){
+            console.log(linha);
+        });
+    });
+});
+
+function LerArquivoCSV(arquivo, callback){
+    const leitor = new FileReader();
+    leitor.onload = function(evento){
+        const conteudo = evento.target.result;
+        callback(conteudo);
+    }
+    leitor.readAsText(arquivo)
+}
+
+function converterCSVparaArray(conteudoCSV){
+    const linhas = conteudoCSV.split('\n');
+    const arrayCSV = [];
+
+    linhas.forEach(function(linha){
+        const valores = linha.split(',');
+        arrayCSV.push(valores)
+    });
+    return arrayCSV;
+}*/
+    </script>
+</head>
+<body>
+    <form>
+        <label>Selecione o arquivo</label>
+        <input type="file" id="arquivoCSV"><br>
+        <input type="submit" onclick="LerArquivoCSV()">
+    </form>
+</body>
+</html>
